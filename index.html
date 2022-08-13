@@ -16,45 +16,23 @@
     <title>Awesome Books</title>
   </head>
   <body>
-    <header>
-      <nav class="nav-bar"></nav>
-    </header>
-    <div class="date"><p></p></div>
-    <main>
-      <div class="library">
-        <h1>Awesome Books</h1>
-        <div class="book-list" id="list"></div>
-        <hr/>
-      </div>
-      <section class="add-book">
-      <h2 id="add-new">Add a new book</h2>
-      <form id="book-form" action="#">
-        <ul>
-          <li>
-            <input
-              id="title"
-              type="text"
-              placeholder="Title"
-              class="space-inputs"
-              required
-            />
-          </li>
-          <li>
-            <input
-              id="author"
-              type="text"
-              placeholder="Author"
-              class="space-inputs"
-              required
-            />
-          </li>
-          <li><input type="submit" value="Add" class="add-btn" /></li>
-        </ul>
+    <section id='awesome-book'>
+      <h2>Book List</h2>
+      <table class="book-list">
+        <tbody id="tbody"></tbody>
+      </table>
+    </section>
+    <section >
+      <hr>
+      <h2>Add Book</h2>
+      <form id="book-form" method="post">
+        <label for="title"></label>
+        <input id= 'title' type="text" placeholder="title" required> <br>
+        <label for="author"></label> <br>
+        <input id='author' type="text" placeholder="author" required> <br> <br>
+        <button type="button" id="bttn">Add</button>
       </form>
     </section>
-    <div id="contact"></div>
-    </main>
-    <footer id="copyright"></footer>
     <!-- script file -->
     <script src="script.js"></script>
   </body>
