@@ -108,3 +108,11 @@ deleteBookObj.forEach((trigger) => {
     ab.deleteBooks(trigger.dataset.bookid);
   });
 });
+
+const currentDate = () => {
+  const newDate = new Date();
+  date.innerHTML = `${newDate.toDateString()}, ${newDate.getHours()}:${newDate.getMinutes()}:${newDate.getSeconds()}pm `;
+  setTimeout(currentDate, 1000);
+};
+
+window.onload = currentDate();
