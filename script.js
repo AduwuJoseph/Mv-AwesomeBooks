@@ -1,3 +1,29 @@
+const listMenu = document.querySelector('#list-menu');
+const formMenu = document.querySelector('#form-menu');
+const contactMenu = document.querySelector('#contact-menu');
+const formSec = document.querySelector('#add-new');
+const listSec = document.querySelector('#awesome-book');
+const contSec = document.querySelector('#contact');
+const date = document.querySelector('.date');
+
+listMenu.addEventListener('click', () => {
+  formSec.style.display = 'none';
+  contSec.style.display = 'none';
+  listSec.style.display = 'block';
+});
+
+formMenu.addEventListener('click', () => {
+  formSec.style.display = 'block';
+  contSec.style.display = 'none';
+  listSec.style.display = 'none';
+});
+
+contactMenu.addEventListener('click', () => {
+  formSec.style.display = 'none';
+  contSec.style.display = 'block';
+  listSec.style.display = 'none';
+});
+
 class AwesomeBooks {
   bookList;
 
