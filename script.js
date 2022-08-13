@@ -91,3 +91,24 @@ class BookList {
     });
   };
 }
+
+// Carry out all dynamic operations only when the window has loaded
+window.addEventListener('load', () => {
+  // render all books stored in the local storage
+  const retrieved = retrieveFromStorage();
+  if (retrieved !== null) {
+    retrieved.forEach((book) => {
+      BookList.populateUi(book.title, book.author, book.id);
+    });
+  }
+  // event listener on the form
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // received all user inputs
+    const titleReceived = document.getElementById('title').value;
+    const authorReceived = document.getElementById('author').value;
+    BookList.addBook(titleReceived, authorReceived);
+    form.reset();
+  });
+});
