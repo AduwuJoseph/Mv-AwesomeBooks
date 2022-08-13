@@ -112,3 +112,21 @@ window.addEventListener('load', () => {
     form.reset();
   });
 });
+
+// ADD NAVIGATION
+const navBar = document.querySelector('.nav-bar');
+const logo = document.createElement('a');
+logo.innerText = 'Awesome Books';
+const menu = document.createElement('div');
+menu.className = 'menu';
+const list = document.createElement('a');
+list.innerText = 'List';
+const addNew = document.createElement('a');
+addNew.innerText = 'Add New';
+const contact = document.createElement('a');
+contact.innerText = 'Contact';
+menu.appendChild(list);
+menu.appendChild(addNew);
+menu.appendChild(contact);
+navBar.appendChild(logo);
+navBar.appendChild(menu);
