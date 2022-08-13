@@ -128,3 +128,7 @@ footer {
   align-items: center;
   width: 95.5%;
 }
+
+.date {
+  float: right;
+}
