@@ -1,132 +1,65 @@
+class AwesomeBooks {
+  bookList;
 
-const Book = (title, author, id = Date.now()) => {
-  this.title = title;
-  this.author = author;
-  this.id = id;
-};
+  awesomeBook;
 
-// accessing the form and the book list container
-const bookList = document.querySelector('.book-list');
-const form = document.querySelector('#book-form');
+  bttn;
 
-/**
- * Method stores an array to the local storage with
- * the key being 'books'
- * @param {array} array
- */
-const storeToLocal = (array) => {
-  array = JSON.stringify(array);
-  window.localStorage.setItem('books', array);
-};
+  constructor() {
+    this.awesomeBook = document.getElementById('awesome-book');
+    this.awesomeBook.style.display = 'none';
+    this.bttn = document.getElementById('bttn');
+    this.bookList = [];
+  }
 
-/**
-   *Method returns an array of all stored objects using the
-   'books' array
-   * @returns {array}
-   */
-const retrieveFromStorage = () => {
-  return JSON.parse(window.localStorage.getItem('books'));
-};
+  displayBooks = (list) => {
+    let tr = '';
+    let sn = 1;
+    list.forEach((item) => {
+      const tr1 = `<tr>
+      <td>${sn}</td>
+      <td>${item.title}</td>
+      <td>${item.author}</td>
+      <td> <button type ="button" class = "remove-book" data-bookId="${(sn - 1)}">Remove</button></td>
+      </tr>`;
+      tr += tr1;
+      sn += 1;
+    });
+    document.getElementById('tbody').innerHTML = tr;
+  }
 
-/**
- * Class used to define a single book-list instance
- */
-class BookList {
-  /**
-   * This method adds a book object to the book list
-   * @param {string} title
-   * @param {string} author
-   */
-  static addBook(title, author) {
-    const book = new Book(title, author);
-    // render book to ui
-    this.populateUi(title, author, book.id);
-
-    // make the necessary updates in the ui
-    const fromLocalStorage = retrieveFromStorage();
-    if (fromLocalStorage !== null) {
-      fromLocalStorage.push(book);
-      storeToLocal(fromLocalStorage);
+  getLocalStorageData() {
+    const data = JSON.parse(localStorage.getItem('bookdata'));
+    if (data != null && data.length > 0) {
+      this.awesomeBook.style.display = 'block';
+      this.displayBooks(data);
     } else {
-      storeToLocal([book]);
+      this.awesomeBook.style.display = 'none';
     }
   }
 
-  /**
-   * This method removes an object with the id given from the local storage
-   * @param {Number} id
-   */
-  static removeBook = (id) => {
-    let fromLocal = retrieveFromStorage();
-    fromLocal = fromLocal.filter((buk) => buk.id !== id);
-    storeToLocal(fromLocal);
-  };
+  submitForm(title, author) {
+    const data = JSON.parse(localStorage.getItem('bookdata'));
+    if (data != null && data.length > 0) {
+      this.bookList = data;
+    }
 
-  /**
-   * This method creates a container of elements
-   * that are appended to the book list element
-   * @param {string} title
-   * @param {string} author
-   * @param {number} bookId
-   */
-  static populateUi = (title, author, bookId) => {
-    const titleAndAuthor = document.createElement('p');
-    titleAndAuthor.classList.add('title-author');
-    titleAndAuthor.innerText = `"${title}" by ${author}`;
-    const removeBtn = document.createElement('button');
-    removeBtn.innerText = 'Remove';
-
-    // create container and append all these
-    const bookContainer = document.createElement('div');
-    bookContainer.classList.add('book-container');
-
-    bookContainer.appendChild(titleAndAuthor);
-    bookContainer.appendChild(removeBtn);
-
-    bookList.appendChild(bookContainer);
-
-    removeBtn.addEventListener('click', () => {
-      bookList.removeChild(bookContainer);
-      this.removeBook(bookId);
-    });
-  };
-}
-
-// Carry out all dynamic operations only when the window has loaded
-window.addEventListener('load', () => {
-  // render all books stored in the local storage
-  const retrieved = retrieveFromStorage();
-  if (retrieved !== null) {
-    retrieved.forEach((book) => {
-      BookList.populateUi(book.title, book.author, book.id);
-    });
+    const data2 = { title, author };
+    this.bookList.push(data2);
+    localStorage.setItem('bookdata', JSON.stringify(this.bookList));
+    document.getElementById('book-form').submit();
+    this.getLocalStorageData();
+    window.location.reload(true);
   }
-  // event listener on the form
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
 
-    // received all user inputs
-    const titleReceived = document.getElementById('title').value;
-    const authorReceived = document.getElementById('author').value;
-    BookList.addBook(titleReceived, authorReceived);
-    form.reset();
-  });
-});
-
-// ADD NAVIGATION
-const navBar = document.querySelector('.nav-bar');
-const logo = document.createElement('a');
-logo.innerText = 'Awesome Books';
-const menu = document.createElement('div');
-menu.className = 'menu';
-const list = document.createElement('a');
-list.innerText = 'List';
-const addNew = document.createElement('a');
-addNew.innerText = 'Add New';
-const contact = document.createElement('a');
-contact.innerText = 'Contact';
-menu.appendChild(list);
-menu.appendChild(addNew);
-menu.appendChild(contact);
-navBar.appendChild(logo);
-navBar.appendChild(menu);
+  deleteBooks(key) {
+    const data = JSON.parse(localStorage.getItem('bookdata'));
+    if (data != null && data.length > 0) {
+      const item = data[key];
+      const newData = data.filter((ele) => ele !== item);
+      localStorage.setItem('bookdata', JSON.stringify(newData));
+      this.getLocalStorageData();
+    }
+    window.location.reload(true);
+  }
+}
