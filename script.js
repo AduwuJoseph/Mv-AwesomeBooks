@@ -46,3 +46,16 @@ if (booksOnLocalStorage !== null) {
     addToBookList(book.title, book.author, book.bookId);
   });
 }
+
+const addBook = () => {
+  const titleReceived = document.getElementById('title').value;
+  const authorReceived = document.getElementById('author').value;
+  const book = {
+    title: titleReceived,
+    author: authorReceived,
+    bookId: collection.length,
+  };
+  collection.push(book);
+  // update the local storage
+  localStorage.setItem('books', JSON.stringify(collection));
+};
