@@ -1,69 +1,93 @@
+
+const Book = (title, author, id = Date.now()) => {
+  this.title = title;
+  this.author = author;
+  this.id = id;
+};
+
+// accessing the form and the book list container
 const bookList = document.querySelector('.book-list');
 const form = document.querySelector('#book-form');
 
-// book collection
-let collection = [];
-
 /**
- * Renders all the books in the array to the UI
- * @param {string, string, number} title, author, bookId
+ * Method stores an array to the local storage with
+ * the key being 'books'
+ * @param {array} array
  */
-function addToBookList(title, author, bookId) {
-  // create all necessary variables
-  const bookTitle = document.createElement('p');
-  bookTitle.innerText = title;
-  const bookAuthor = document.createElement('p');
-  bookAuthor.innerText = author;
-  const removeBtn = document.createElement('button');
-  removeBtn.innerText = 'Remove';
-  const hr = document.createElement('hr');
-
-  // create container and append all these
-  const bookContainer = document.createElement('div');
-  bookContainer.appendChild(bookTitle);
-  bookContainer.appendChild(bookAuthor);
-  bookContainer.appendChild(removeBtn);
-  bookContainer.appendChild(hr);
-
-  // append all this to the book list div element
-  bookList.appendChild(bookContainer);
-
-  // removing a book and updating the collection array
-  removeBtn.addEventListener('click', () => {
-    bookList.removeChild(bookContainer);
-    // update collection
-    collection = collection.filter((obj) => obj.bookId !== bookId);
-    // update local storage
-    localStorage.setItem('books', JSON.stringify(collection));
-  });
-}
-
-// get all the data from the local storage and add it to the book list;
-const booksOnLocalStorage = JSON.parse(localStorage.getItem('books'));
-if (booksOnLocalStorage !== null) {
-  collection = [...booksOnLocalStorage];
-  collection.forEach((book) => {
-    addToBookList(book.title, book.author, book.bookId);
-  });
-}
-
-const addBook = () => {
-  const titleReceived = document.getElementById('title').value;
-  const authorReceived = document.getElementById('author').value;
-  const book = {
-    title: titleReceived,
-    author: authorReceived,
-    bookId: collection.length,
-  };
-  collection.push(book);
-  // update the local storage
-  localStorage.setItem('books', JSON.stringify(collection));
+const storeToLocal = (array) => {
+  array = JSON.stringify(array);
+  window.localStorage.setItem('books', array);
 };
 
-// event listener for the form submit
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  addBook();
-  const book = collection[collection.length - 1];
-  addToBookList(book.title, book.author, book.bookId);
-});
+/**
+   *Method returns an array of all stored objects using the
+   'books' array
+   * @returns {array}
+   */
+const retrieveFromStorage = () => {
+  return JSON.parse(window.localStorage.getItem('books'));
+};
+
+/**
+ * Class used to define a single book-list instance
+ */
+class BookList {
+  /**
+   * This method adds a book object to the book list
+   * @param {string} title
+   * @param {string} author
+   */
+  static addBook(title, author) {
+    const book = new Book(title, author);
+    // render book to ui
+    this.populateUi(title, author, book.id);
+
+    // make the necessary updates in the ui
+    const fromLocalStorage = retrieveFromStorage();
+    if (fromLocalStorage !== null) {
+      fromLocalStorage.push(book);
+      storeToLocal(fromLocalStorage);
+    } else {
+      storeToLocal([book]);
+    }
+  }
+
+  /**
+   * This method removes an object with the id given from the local storage
+   * @param {Number} id
+   */
+  static removeBook = (id) => {
+    let fromLocal = retrieveFromStorage();
+    fromLocal = fromLocal.filter((buk) => buk.id !== id);
+    storeToLocal(fromLocal);
+  };
+
+  /**
+   * This method creates a container of elements
+   * that are appended to the book list element
+   * @param {string} title
+   * @param {string} author
+   * @param {number} bookId
+   */
+  static populateUi = (title, author, bookId) => {
+    const titleAndAuthor = document.createElement('p');
+    titleAndAuthor.classList.add('title-author');
+    titleAndAuthor.innerText = `"${title}" by ${author}`;
+    const removeBtn = document.createElement('button');
+    removeBtn.innerText = 'Remove';
+
+    // create container and append all these
+    const bookContainer = document.createElement('div');
+    bookContainer.classList.add('book-container');
+
+    bookContainer.appendChild(titleAndAuthor);
+    bookContainer.appendChild(removeBtn);
+
+    bookList.appendChild(bookContainer);
+
+    removeBtn.addEventListener('click', () => {
+      bookList.removeChild(bookContainer);
+      this.removeBook(bookId);
+    });
+  };
+}
