@@ -16,13 +16,24 @@
     <title>Awesome Books</title>
   </head>
   <body>
+    <header>
+      <div class="logo"><a href="#Logo">Awesome Books</a></div>
+      <nav class="hamb-menu">
+        <ul class="nav-list">
+          <li class="list"><a id="list-menu" href="#list">Book List</a></li>
+          <li class="list"><a id="form-menu" href="#add-new"> Add New</a></li>
+          <li class="list"><a id="contact-menu" href="#contact"> Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="date"></div>
     <section id='awesome-book'>
-      <h2>Book List</h2>
+      <h2>All Awesome Books</h2>
       <table class="book-list">
         <tbody id="tbody"></tbody>
       </table>
     </section>
-    <section >
+    <section id="add-new">
       <hr>
       <h2>Add Book</h2>
       <form id="book-form" method="post">
