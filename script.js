@@ -1,69 +1,84 @@
-const bookList = document.querySelector('.book-list');
-const form = document.querySelector('#book-form');
+class AwesomeBooks {
+  bookList;
 
-// book collection
-let collection = [];
+  awesomeBook;
 
-/**
- * Renders all the books in the array to the UI
- * @param {string, string, number} title, author, bookId
- */
-function addToBookList(title, author, bookId) {
-  // create all necessary variables
-  const bookTitle = document.createElement('p');
-  bookTitle.innerText = title;
-  const bookAuthor = document.createElement('p');
-  bookAuthor.innerText = author;
-  const removeBtn = document.createElement('button');
-  removeBtn.innerText = 'Remove';
-  const hr = document.createElement('hr');
+  bttn;
 
-  // create container and append all these
-  const bookContainer = document.createElement('div');
-  bookContainer.appendChild(bookTitle);
-  bookContainer.appendChild(bookAuthor);
-  bookContainer.appendChild(removeBtn);
-  bookContainer.appendChild(hr);
+  constructor() {
+    this.awesomeBook = document.getElementById('awesome-book');
+    this.awesomeBook.style.display = 'none';
+    this.bttn = document.getElementById('bttn');
+    this.bookList = [];
+  }
 
-  // append all this to the book list div element
-  bookList.appendChild(bookContainer);
+  displayBooks = (list) => {
+    let tr = '';
+    let sn = 1;
+    list.forEach((item) => {
+      const tr1 = `<tr>
+      <td>${sn}</td>
+      <td>${item.title}</td>
+      <td>${item.author}</td>
+      <td> <button type ="button" class = "remove-book" data-bookId="${(sn - 1)}">Remove</button></td>
+      </tr>`;
+      tr += tr1;
+      sn += 1;
+    });
+    document.getElementById('tbody').innerHTML = tr;
+  }
 
-  // removing a book and updating the collection array
-  removeBtn.addEventListener('click', () => {
-    bookList.removeChild(bookContainer);
-    // update collection
-    collection = collection.filter((obj) => obj.bookId !== bookId);
-    // update local storage
-    localStorage.setItem('books', JSON.stringify(collection));
-  });
+  getLocalStorageData() {
+    const data = JSON.parse(localStorage.getItem('bookdata'));
+    if (data != null && data.length > 0) {
+      this.awesomeBook.style.display = 'block';
+      this.displayBooks(data);
+    } else {
+      this.awesomeBook.style.display = 'none';
+    }
+  }
+
+  submitForm(title, author) {
+    const data = JSON.parse(localStorage.getItem('bookdata'));
+    if (data != null && data.length > 0) {
+      this.bookList = data;
+    }
+
+    const data2 = { title, author };
+    this.bookList.push(data2);
+    localStorage.setItem('bookdata', JSON.stringify(this.bookList));
+    document.getElementById('book-form').submit();
+    this.getLocalStorageData();
+    window.location.reload(true);
+  }
+
+  deleteBooks(key) {
+    const data = JSON.parse(localStorage.getItem('bookdata'));
+    if (data != null && data.length > 0) {
+      const item = data[key];
+      const newData = data.filter((ele) => ele !== item);
+      localStorage.setItem('bookdata', JSON.stringify(newData));
+      this.getLocalStorageData();
+    }
+    window.location.reload(true);
+  }
 }
 
-// get all the data from the local storage and add it to the book list;
-const booksOnLocalStorage = JSON.parse(localStorage.getItem('books'));
-if (booksOnLocalStorage !== null) {
-  collection = [...booksOnLocalStorage];
-  collection.forEach((book) => {
-    addToBookList(book.title, book.author, book.bookId);
-  });
-}
+const ab = new AwesomeBooks();
 
-const addBook = () => {
-  const titleReceived = document.getElementById('title').value;
-  const authorReceived = document.getElementById('author').value;
-  const book = {
-    title: titleReceived,
-    author: authorReceived,
-    bookId: collection.length,
-  };
-  collection.push(book);
-  // update the local storage
-  localStorage.setItem('books', JSON.stringify(collection));
+document.getElementById('bttn').onclick = () => {
+  const title = document.getElementById('title');
+  const author = document.getElementById('author');
+  ab.submitForm(title.value, author.value);
 };
 
-// event listener for the form submit
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  addBook();
-  const book = collection[collection.length - 1];
-  addToBookList(book.title, book.author, book.bookId);
+if (localStorage.getItem('bookdata') != null) {
+  ab.getLocalStorageData();
+}
+
+const deleteBookObj = document.querySelectorAll('.remove-book');
+deleteBookObj.forEach((trigger) => {
+  trigger.addEventListener('click', () => {
+    ab.deleteBooks(trigger.dataset.bookid);
+  });
 });
