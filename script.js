@@ -63,3 +63,12 @@ class AwesomeBooks {
     window.location.reload(true);
   }
 }
+
+const ab = new AwesomeBooks();
+
+document.getElementById('bttn').onclick = () => {
+  const title = document.getElementById('title');
+  const author = document.getElementById('author');
+  ab.submitForm(title.value, author.value);
+};
+
